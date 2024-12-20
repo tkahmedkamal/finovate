@@ -100,7 +100,7 @@ body {
     @apply flex justify-center;
   }
   .flex-between {
-    @apply flex justify-between gap-5;
+    @apply flex items-center justify-between gap-5;
   }
   .trans-all {
     @apply transition-all duration-500;
@@ -117,4 +117,9 @@ body {
   .trans-shadow {
     @apply transition-shadow duration-500;
   }
+}
+
+.cl-internal-w4f4gh,
+.cl-internal-4x6jej {
+  background: hsl(var(--card));
 }

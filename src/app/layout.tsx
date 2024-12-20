@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 
 import { Inter } from 'next/font/google';
+
+import { AuthProvider, ThemeProvider } from '@/components';
 import './globals.css';
 
 const font = Inter({ subsets: ['latin'] });
@@ -10,14 +12,21 @@ export const metadata: Metadata = {
   description: 'Finovate is a financial application for managing your money.'
 };
 
-export default function RootLayout({
-  children
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Children) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${font.className} antialiased`}>{children}</body>
-    </html>
+    <AuthProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body className={`${font.className} antialiased`}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <main>{children}</main>
+          </ThemeProvider>
+        </body>
+      </html>
+    </AuthProvider>
   );
 }
