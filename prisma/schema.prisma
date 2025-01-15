@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model User {
+  id               String         @id @default(uuid())
+  clerkId          String         @unique
+  email            String         @unique
+  firstName        String
+  lastName         String
+  fullName         String
+  imageUrl         String
+  stripeCustomerId String?        @unique
+  subscription     Subscription?
+  useConfig        UserConfig?
+  categories       Category[]
+  transactions     Transaction[]
+  dailyStats       DailyStats[]
+  monthlyStats     MonthlyStats[]
+}
+
+model UserConfig {
+  id       String @id @default(uuid())
+  timezone String @default("UTC")
+  currency String @default("EGP")
+
+  user   User   @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+  userId String @unique
+
+  @@map("userConfigs")
+}
+
+model Category {
+  id           String        @id @default(uuid())
+  name         String
+  description  String?
+  icon         String
+  type         String        @default("income")
+  user         User          @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+  userId       String
+  transactions Transaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, type, userId])
+  @@index([userId])
+  @@map("categories")
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  description String
+  amount      Float    @default(0)
+  type        String   @default("income")
+  date        DateTime
+  user        User     @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+  userId      String
+
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categoryId])
+  @@map("transactions")
+}
+
+model DailyStats {
+  day     Int
+  month   Int
+  year    Int
+  income  Float
+  expense Float
+  user    User   @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+  userId  String
+
+  @@id([userId, day, month, year])
+  @@map("dailyStats")
+}
+
+model MonthlyStats {
+  month   Int
+  year    Int
+  income  Float
+  expense Float
+  user    User   @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+  userId  String
+
+  @@id([userId, month, year])
+  @@map("monthlyStats")
+}
+
+model Subscription {
+  stripeSubscriptionId String @id @unique
+  period               String
+  periodStart          Int
+  periodEnd            Int
+  status               String
+  planId               String
+  user                 User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId               String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("subscriptions")
+}

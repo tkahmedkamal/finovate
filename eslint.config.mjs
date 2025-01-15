@@ -21,10 +21,10 @@ const eslintConfig = [
           mode: 'full',
           type: 'shared',
           pattern: [
+            'src/app/api/**/*',
             'src/components/**/*',
             'src/hooks/**/*',
-            'src/lib/**/*',
-            'src/actions/**/*'
+            'src/lib/**/*'
           ]
         },
         {
@@ -104,7 +104,7 @@ const eslintConfig = [
           rules: [
             {
               from: ['shared'],
-              allow: ['shared', 'store']
+              allow: ['shared', 'store', 'feature']
             },
             {
               from: ['feature'],
