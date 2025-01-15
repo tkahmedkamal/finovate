@@ -11,7 +11,7 @@ export const getMeSubscription = async (): Promise<GetSubscriptionResponse> => {
     throw new Error('Invalid token, please sign in');
   }
 
-  const response = await fetch(`${process.env.Base_URL}/api/subscription/me`, {
+  const response = await fetch(`${process.env.BASE_URL}/api/subscription/me`, {
     headers: {
       Authorization: `Bearer ${token}`
     }
