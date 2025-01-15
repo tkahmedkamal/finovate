@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from 'react';
 
 interface DateInputProps {
   value?: Date;
-  onChange: (date: Date) => void;
+  onChange: (_date: Date) => void;
 }
 
 interface DateParts {
@@ -17,7 +17,7 @@ const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
     return {
       day: d.getDate(),
       month: d.getMonth() + 1, // JavaScript months are 0-indexed
-      year: d.getFullYear(),
+      year: d.getFullYear()
     };
   });
 
@@ -30,15 +30,15 @@ const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
     setDate({
       day: d.getDate(),
       month: d.getMonth() + 1,
-      year: d.getFullYear(),
+      year: d.getFullYear()
     });
   }, [value]);
 
   const validateDate = (field: keyof DateParts, value: number): boolean => {
     if (
-      (field === "day" && (value < 1 || value > 31)) ||
-      (field === "month" && (value < 1 || value > 12)) ||
-      (field === "year" && (value < 1000 || value > 9999))
+      (field === 'day' && (value < 1 || value > 31)) ||
+      (field === 'month' && (value < 1 || value > 12)) ||
+      (field === 'year' && (value < 1000 || value > 9999))
     ) {
       return false;
     }
@@ -55,9 +55,9 @@ const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
 
   const handleInputChange =
     (field: keyof DateParts) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value ? Number(e.target.value) : "";
+      const newValue = e.target.value ? Number(e.target.value) : '';
       const isValid =
-        typeof newValue === "number" && validateDate(field, newValue);
+        typeof newValue === 'number' && validateDate(field, newValue);
 
       // If the new value is valid, update the date
       const newDate = { ...date, [field]: newValue };
@@ -101,25 +101,25 @@ const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
       if (
         !/^[0-9]$/.test(e.key) &&
         ![
-          "ArrowUp",
-          "ArrowDown",
-          "ArrowLeft",
-          "ArrowRight",
-          "Delete",
-          "Tab",
-          "Backspace",
-          "Enter",
+          'ArrowUp',
+          'ArrowDown',
+          'ArrowLeft',
+          'ArrowRight',
+          'Delete',
+          'Tab',
+          'Backspace',
+          'Enter'
         ].includes(e.key)
       ) {
         e.preventDefault();
         return;
       }
 
-      if (e.key === "ArrowUp") {
+      if (e.key === 'ArrowUp') {
         e.preventDefault();
         let newDate = { ...date };
 
-        if (field === "day") {
+        if (field === 'day') {
           if (date[field] === new Date(date.year, date.month, 0).getDate()) {
             newDate = { ...newDate, day: 1, month: (date.month % 12) + 1 };
             if (newDate.month === 1) newDate.year += 1;
@@ -128,7 +128,7 @@ const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
           }
         }
 
-        if (field === "month") {
+        if (field === 'month') {
           if (date[field] === 12) {
             newDate = { ...newDate, month: 1, year: date.year + 1 };
           } else {
@@ -136,17 +136,17 @@ const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
           }
         }
 
-        if (field === "year") {
+        if (field === 'year') {
           newDate.year += 1;
         }
 
         setDate(newDate);
         onChange(new Date(newDate.year, newDate.month - 1, newDate.day));
-      } else if (e.key === "ArrowDown") {
+      } else if (e.key === 'ArrowDown') {
         e.preventDefault();
         let newDate = { ...date };
 
-        if (field === "day") {
+        if (field === 'day') {
           if (date[field] === 1) {
             newDate.month -= 1;
             if (newDate.month === 0) {
@@ -159,7 +159,7 @@ const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
           }
         }
 
-        if (field === "month") {
+        if (field === 'month') {
           if (date[field] === 1) {
             newDate = { ...newDate, month: 12, year: date.year - 1 };
           } else {
@@ -167,7 +167,7 @@ const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
           }
         }
 
-        if (field === "year") {
+        if (field === 'year') {
           newDate.year -= 1;
         }
 
@@ -175,88 +175,88 @@ const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
         onChange(new Date(newDate.year, newDate.month - 1, newDate.day));
       }
 
-      if (e.key === "ArrowRight") {
+      if (e.key === 'ArrowRight') {
         if (
           e.currentTarget.selectionStart === e.currentTarget.value.length ||
           (e.currentTarget.selectionStart === 0 &&
             e.currentTarget.selectionEnd === e.currentTarget.value.length)
         ) {
           e.preventDefault();
-          if (field === "month") dayRef.current?.focus();
-          if (field === "day") yearRef.current?.focus();
+          if (field === 'month') dayRef.current?.focus();
+          if (field === 'day') yearRef.current?.focus();
         }
-      } else if (e.key === "ArrowLeft") {
+      } else if (e.key === 'ArrowLeft') {
         if (
           e.currentTarget.selectionStart === 0 ||
           (e.currentTarget.selectionStart === 0 &&
             e.currentTarget.selectionEnd === e.currentTarget.value.length)
         ) {
           e.preventDefault();
-          if (field === "day") monthRef.current?.focus();
-          if (field === "year") dayRef.current?.focus();
+          if (field === 'day') monthRef.current?.focus();
+          if (field === 'year') dayRef.current?.focus();
         }
       }
     };
 
   return (
-    <div className="flex border rounded-lg items-center text-sm px-1">
+    <div className="flex items-center rounded-lg border px-1 text-sm">
       <input
         type="text"
         ref={monthRef}
         max={12}
         maxLength={2}
         value={date.month.toString()}
-        onChange={handleInputChange("month")}
-        onKeyDown={handleKeyDown("month")}
-        onFocus={(e) => {
+        onChange={handleInputChange('month')}
+        onKeyDown={handleKeyDown('month')}
+        onFocus={e => {
           if (window.innerWidth > 1024) {
             e.target.select();
           }
         }}
-        onBlur={handleBlur("month")}
-        className="p-0 outline-none w-6 border-none text-center"
+        onBlur={handleBlur('month')}
+        className="w-6 border-none p-0 text-center outline-none"
         placeholder="M"
       />
-      <span className="opacity-20 -mx-px">/</span>
+      <span className="-mx-px opacity-20">/</span>
       <input
         type="text"
         ref={dayRef}
         max={31}
         maxLength={2}
         value={date.day.toString()}
-        onChange={handleInputChange("day")}
-        onKeyDown={handleKeyDown("day")}
-        onFocus={(e) => {
+        onChange={handleInputChange('day')}
+        onKeyDown={handleKeyDown('day')}
+        onFocus={e => {
           if (window.innerWidth > 1024) {
             e.target.select();
           }
         }}
-        onBlur={handleBlur("day")}
-        className="p-0 outline-none w-7 border-none text-center"
+        onBlur={handleBlur('day')}
+        className="w-7 border-none p-0 text-center outline-none"
         placeholder="D"
       />
-      <span className="opacity-20 -mx-px">/</span>
+      <span className="-mx-px opacity-20">/</span>
       <input
         type="text"
         ref={yearRef}
         max={9999}
         maxLength={4}
         value={date.year.toString()}
-        onChange={handleInputChange("year")}
-        onKeyDown={handleKeyDown("year")}
-        onFocus={(e) => {
+        onChange={handleInputChange('year')}
+        onKeyDown={handleKeyDown('year')}
+        onFocus={e => {
           if (window.innerWidth > 1024) {
             e.target.select();
           }
         }}
-        onBlur={handleBlur("year")}
-        className="p-0 outline-none w-12 border-none text-center"
+        onBlur={handleBlur('year')}
+        className="w-12 border-none p-0 text-center outline-none"
         placeholder="YYYY"
       />
     </div>
   );
 };
 
-DateInput.displayName = "DateInput";
+DateInput.displayName = 'DateInput';
 
 export { DateInput };
