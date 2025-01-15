@@ -7,7 +7,15 @@ const useDeleteCategory = () => {
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: deleteCategory,
+    mutationFn: async (id: string) => {
+      const res = await deleteCategory(id);
+
+      if (!res.ok) {
+        throw new Error(res.error);
+      }
+
+      return res.data;
+    },
 
     onSuccess: () => {
       queryClient.invalidateQueries({

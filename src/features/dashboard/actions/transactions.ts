@@ -21,12 +21,15 @@ export const createTransaction = async (data: TransactionSchema) => {
     const { success, data: newData, error } = transactionSchema.safeParse(data);
 
     if (!success) {
-      throw new Error(error.message);
+      return {
+        ok: false,
+        error: error.message
+      };
     }
 
     const { description, category, type, amount, date } = newData;
 
-    return await prisma.$transaction([
+    const newTransaction = await prisma.$transaction([
       prisma.transaction.create({
         data: {
           description,
@@ -90,11 +93,18 @@ export const createTransaction = async (data: TransactionSchema) => {
         }
       })
     ]);
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
 
-    throw new Error('Something went wrong, please try again later');
+    return {
+      ok: true,
+      data: newTransaction
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Something went wrong, please try again later.'
+    };
   }
 };

@@ -34,7 +34,7 @@ export const createSubscription = async () => {
     customerId: dbUser.stripeCustomerId
   });
 
-  return redirect(subscriptionUrl);
+  redirect(subscriptionUrl);
 };
 
 export const createBillingPortal = async () => {
@@ -62,5 +62,5 @@ export const createBillingPortal = async () => {
     return_url: `${BASE_URL}/billing`
   });
 
-  return redirect(billingPortal.url);
+  redirect(billingPortal.url);
 };

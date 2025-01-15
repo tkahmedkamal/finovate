@@ -2,12 +2,21 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { createTransaction } from '../actions/transactions';
+import { TransactionSchema } from '../schema/transaction-schema';
 
 const useCreateTransaction = () => {
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: createTransaction,
+    mutationFn: async (data: TransactionSchema) => {
+      const res = await createTransaction(data);
+
+      if (!res.ok) {
+        throw new Error(res.error);
+      }
+
+      return res.data;
+    },
 
     onSuccess: () => {
       queryClient.invalidateQueries({

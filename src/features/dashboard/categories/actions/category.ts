@@ -14,20 +14,30 @@ export const deleteCategory = async (id: string) => {
     }
 
     if (!id) {
-      throw new Error('Invalid category id');
+      return {
+        ok: false,
+        error: 'Invalid category id'
+      };
     }
 
-    return await prisma.category.delete({
+    const category = await prisma.category.delete({
       where: {
         userId: user.id,
         id
       }
     });
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
 
-    throw new Error('Something went wrong, please try again later');
+    return {
+      ok: true,
+      data: category
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Something went wrong, please try again later'
+    };
   }
 };

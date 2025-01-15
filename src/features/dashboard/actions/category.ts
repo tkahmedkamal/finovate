@@ -39,15 +39,20 @@ export const createCategory = async (data: CategorySchema) => {
     const categoriesCount = userInfo?._count?.categories || 0;
 
     if (!isSubscribed && categoriesCount >= 2) {
-      throw new Error(
-        'You have reached the limit of categories for your subscription plan'
-      );
+      return {
+        ok: false,
+        error:
+          'You have reached the limit of categories for your subscription plan'
+      };
     }
 
     const { success, data: newData, error } = categorySchema.safeParse(data);
 
     if (!success) {
-      throw new Error(error.errors[0].message);
+      return {
+        ok: false,
+        error: error.errors[0].message
+      };
     }
 
     const category = await prisma.category.findFirst({
@@ -59,20 +64,30 @@ export const createCategory = async (data: CategorySchema) => {
     });
 
     if (category) {
-      throw new Error('Category already exists');
+      return {
+        ok: false,
+        error: 'Category already exists'
+      };
     }
 
-    return await prisma.category.create({
+    const newCategory = await prisma.category.create({
       data: {
         userId: user.id,
         ...newData
       }
     });
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
 
-    throw new Error('Something went wrong, please try again later');
+    return {
+      ok: true,
+      data: newCategory
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Something went wrong, please try again later.'
+    };
   }
 };

@@ -2,12 +2,21 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { updateUserConfig } from '../actions/user';
+import { UserConfigSchema } from '../schema/user-config-schema';
 
 const useUpdateUserConfig = () => {
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: updateUserConfig,
+    mutationFn: async (data: UserConfigSchema) => {
+      const res = await updateUserConfig(data);
+
+      if (!res.ok) {
+        throw new Error(res.error);
+      }
+
+      return res.data;
+    },
 
     onSuccess: () => {
       queryClient.invalidateQueries({

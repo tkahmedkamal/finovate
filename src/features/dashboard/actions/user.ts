@@ -34,16 +34,22 @@ export const updateUserConfig = async (data: UserConfigSchema) => {
     const isSubscribed = userInfo?.subscription?.status === 'active';
 
     if (!isSubscribed) {
-      throw new Error('You need to subscribe to a plan to access this feature');
+      return {
+        ok: false,
+        error: 'You need to subscribe to a plan to access this feature'
+      };
     }
 
     const { success, data: newData, error } = userConfigSchema.safeParse(data);
 
     if (!success) {
-      throw new Error(error.errors[0].message);
+      return {
+        ok: false,
+        error: error.errors[0].message
+      };
     }
 
-    return await prisma.userConfig.update({
+    const userConfig = await prisma.userConfig.update({
       where: {
         userId: user.id
       },
@@ -51,11 +57,22 @@ export const updateUserConfig = async (data: UserConfigSchema) => {
         ...newData
       }
     });
+
+    return {
+      ok: true,
+      data: userConfig
+    };
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(error.message);
     }
 
-    throw new Error('Something went wrong, please try again later');
+    return {
+      ok: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Something went wrong, please try again later'
+    };
   }
 };
