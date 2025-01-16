@@ -9,6 +9,8 @@
 - [Prisma](https://www.prisma.io/)
 - [Clerk](https://clerk.com/)
 - [Shadcn](https://ui.shadcn.com/)
+- [Stripe](https://stripe.com/)
+- [React Query](https://tanstack.com/query/latest)
 
 ## Themes
 
@@ -17,7 +19,7 @@
 
 ## Live
 
-[finovate app](https://finovate-silk.vercel.app/)
+[Finovate App](https://finovate-silk.vercel.app/)
 
 ## Installation
 
