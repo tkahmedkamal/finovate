@@ -48,7 +48,6 @@ const TransactionsCsv = () => {
     <SkeletonContainer isLoading={isFetching}>
       <Button onClick={onClick}>
         <Download />
-        Download CSV
       </Button>
     </SkeletonContainer>
   );
